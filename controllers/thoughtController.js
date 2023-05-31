@@ -38,6 +38,19 @@ module.exports = {
       res.status(500).json(err);
     }
   },
+
+  async updateThought(req, res) {
+    try {
+      const thought = await Thought.findOneAndUpdate(
+        { _id: req.params.thoughtId },
+        { $set: req.body },
+        { runValidators: true, new: true }
+      );
+    } catch (err) {
+      res.status(500).json(err);
+    }
+  },
+
   async deleteThought(req, res) {
     try {
       const thought = await Thought.findOneAndDelete({
