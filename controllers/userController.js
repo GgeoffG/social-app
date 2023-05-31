@@ -14,6 +14,9 @@ module.exports = {
     try {
       const user = await User.findOne({ _id: req.params.userId });
       //need to populate thought and friend data
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
       res.json(user);
     } catch (err) {
       res.status(500).json(err);
@@ -37,7 +40,7 @@ module.exports = {
         { runValidators: true, new: true }
       );
       if (!updatedUser) {
-        res.status(404).json({ message: "User not found" });
+        return res.status(404).json({ message: "User not found" });
       }
       res.json(updatedUser);
     } catch (err) {
@@ -49,7 +52,7 @@ module.exports = {
     try {
       const user = await User.findOneAndDelete({ _id: req.params.userId });
       if (!user) {
-        res.status(404).json({ message: "User not found" });
+        return res.status(404).json({ message: "User not found" });
       }
       await Thought.deleteMany({ _id: { $in: user.thoughts } });
       res.json({ message: "User deleted" });
@@ -61,12 +64,12 @@ module.exports = {
   async addFriend(req, res) {
     try {
       const user = await User.findOneAndUpdate(
-        { id: req.params.userId },
+        { _id: req.params.userId },
         { $addToSet: { friends: req.params.friendId } },
         { runValidators: true, new: true }
       );
       if (!user) {
-        res.status(404).json({ message: "User not found" });
+        return res.status(404).json({ message: "User not found" });
       }
       res.json(user);
     } catch (err) {
@@ -76,13 +79,13 @@ module.exports = {
 
   async removeFriend(req, res) {
     try {
-      const user = await User.findOneAndDelete(
-        { id: req.params.userId },
+      const user = await User.findOneAndUpdate(
+        { _id: req.params.userId },
         { $pull: { friends: { friendId: req.params.friendId } } },
         { runValidators: true, new: true }
       );
       if (!user) {
-        res.status(404).json({ message: "User not found" });
+        return res.status(404).json({ message: "User not found" });
       }
       res.json(user);
     } catch (err) {

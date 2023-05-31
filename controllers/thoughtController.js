@@ -57,7 +57,7 @@ module.exports = {
         id: req.params.thoughtId,
       });
       if (!thought) {
-        res.status(404).json({ message: "Thought not Found" });
+        return res.status(404).json({ message: "Thought not Found" });
       }
       res.json({ message: "Thought deleted" });
     } catch (err) {
@@ -73,7 +73,7 @@ module.exports = {
         { runValidators: true, new: true }
       );
       if (!thought) {
-        res.status(404).json({ message: "Thought not Found" });
+        return res.status(404).json({ message: "Thought not Found" });
       }
       res.json(thought);
     } catch (err) {
@@ -89,7 +89,7 @@ module.exports = {
         { runValidators: true, new: true }
       );
       if (!thought) {
-        res.status(404).json({ message: "Thought not Found" });
+        return res.status(404).json({ message: "Thought not Found" });
       }
       res.json(thought);
     } catch (err) {
