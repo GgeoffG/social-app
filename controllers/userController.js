@@ -3,15 +3,8 @@ const { User, Thought } = require("../models");
 module.exports = {
   async getUsers(req, res) {
     try {
-      const users = await User.find()
-        .populate({
-          path: "thoughts",
-          select: "-__v",
-        })
-        .populate({
-          path: "friends",
-          select: "-__v",
-        });
+      const users = await User.find();
+
       res.json(users);
     } catch (err) {
       res.status(500).json(err);
@@ -20,7 +13,15 @@ module.exports = {
 
   async getSingleUser(req, res) {
     try {
-      const user = await User.findOne({ _id: req.params.userId });
+      const user = await User.findOne({ _id: req.params.userId })
+        .populate({
+          path: "thoughts",
+          select: "-__v",
+        })
+        .populate({
+          path: "friends",
+          select: "-__v",
+        });
       //need to populate thought and friend data
       if (!user) {
         return res.status(404).json({ message: "User not found" });
