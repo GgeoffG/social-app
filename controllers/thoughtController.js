@@ -33,7 +33,7 @@ module.exports = {
         { _id: userid },
         { $push: { thoughts: thought._id } }
       );
-      res.status(200)({ thought });
+      res.status(200).json({ thought });
     } catch (err) {
       res.status(500).json(err);
     }
@@ -46,6 +46,7 @@ module.exports = {
         { $set: req.body },
         { runValidators: true, new: true }
       );
+      res.status(200).json(thought);
     } catch (err) {
       res.status(500).json(err);
     }
@@ -54,7 +55,7 @@ module.exports = {
   async deleteThought(req, res) {
     try {
       const thought = await Thought.findOneAndDelete({
-        id: req.params.thoughtId,
+        _id: req.params.thoughtId,
       });
       if (!thought) {
         return res.status(404).json({ message: "Thought not Found" });
@@ -84,7 +85,7 @@ module.exports = {
   async deleteReaction(req, res) {
     try {
       const thought = await Thought.findOneAndUpdate(
-        { _id: req.params.studentId },
+        { _id: req.params.thoughtId },
         { $pull: { reactions: { reactionId: req.params.reactionId } } },
         { runValidators: true, new: true }
       );
